@@ -1,10 +1,11 @@
 package plaintext
 
 import (
+	"testing"
+
 	"github.com/huantt/plaintext-extractor/html"
 	"github.com/huantt/plaintext-extractor/markdown"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestParseHtml(t *testing.T) {
@@ -12,7 +13,7 @@ func TestParseHtml(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{`<div>This is a <a href="https://example.com">link</a></div>`, "This is a link"},
+		{`<div>This is a <a href="https://example.com">link</a></div>`, "This is a link\n"},
 	}
 	for _, test := range tests {
 		extractor := NewHtmlExtractor()
@@ -44,8 +45,8 @@ func TestMultipleExtractors(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{"<div> html </div> *markdown*", "html markdown"},
-		{"<div> *markdown in html* </div>", "markdown in html"},
+		{"<div> html </div> *markdown*", "html\nmarkdown"},
+		{"<div> *markdown in html* </div>", "markdown in html\n"},
 	}
 	for _, test := range tests {
 		markdownExtractor := markdown.NewExtractor()
