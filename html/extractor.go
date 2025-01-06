@@ -64,17 +64,7 @@ func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node, idx
 	}
 
 	if node.Type == html.TextNode {
-		// Trim and append the text content
-		// text := strings.TrimSpace(node.Data)
 		if strings.TrimSpace(node.Data) != "" {
-			// if plainText.Len() > 0 {
-			// 	plainText.WriteString(" ")
-			// }
-			// if node.Parent == nil || node.Parent.DataAtom.String() == "div" {
-			// 	plainText.WriteString(text)
-			// } else {
-			// 	plainText.WriteString(node.Data)
-			// }
 			plainText.WriteString(node.Data)
 		}
 	}
