@@ -13,7 +13,7 @@ It provides a flexible and extensible interface for extracting the plain text co
 
 ## Installation
 ```shell
-go get github.com/huantt/plaintext-extractror
+go get github.com/huantt/plaintext-extractor
 ```
 
 ## Usage

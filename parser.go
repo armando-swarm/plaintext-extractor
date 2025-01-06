@@ -1,8 +1,8 @@
 package plaintext
 
 import (
-	"github.com/huantt/plaintext-extractor/html"
-	"github.com/huantt/plaintext-extractor/markdown"
+	"github.com/armando-swarm/plaintext-extractor/html"
+	"github.com/armando-swarm/plaintext-extractor/markdown"
 )
 
 // Extractor represents a plain text extractor that can parse input strings using multiple extract functions (for example html or markdown).

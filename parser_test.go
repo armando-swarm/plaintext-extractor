@@ -3,8 +3,8 @@ package plaintext
 import (
 	"testing"
 
-	"github.com/huantt/plaintext-extractor/html"
-	"github.com/huantt/plaintext-extractor/markdown"
+	"github.com/armando-swarm/plaintext-extractor/html"
+	"github.com/armando-swarm/plaintext-extractor/markdown"
 	"github.com/stretchr/testify/assert"
 )
 
