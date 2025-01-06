@@ -45,13 +45,6 @@ func (e *Extractor) PlainText(input string) (*string, error) {
 		}
 	}
 
-	var j int
-	for j = len - 1; j >= 0; j-- {
-		if output[j] != '\n' {
-			break
-		}
-	}
-
 	output = output[i:]
 	output = string(regexp.MustCompile("\\s*\n+\\s*").ReplaceAll([]byte(output), []byte("\n")))
 	return &output, nil
