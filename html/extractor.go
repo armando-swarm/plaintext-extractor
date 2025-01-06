@@ -37,27 +37,52 @@ func (e *Extractor) PlainText(input string) (*string, error) {
 	e.extractText(&plainText, doc, 0)
 
 	output := plainText.String()
-	output = string(regexp.MustCompile("\n+\\s+").ReplaceAll([]byte(output), []byte("\n")))
+	len := plainText.Len()
+	var i int
+	for i = 0; i < len; i++ {
+		if !e.isSpace(output[i]) {
+			break
+		}
+	}
+
+	var j int
+	for j = len - 1; j >= 0; j-- {
+		if output[j] != '\n' {
+			break
+		}
+	}
+
+	output = output[i:]
+	output = string(regexp.MustCompile("\\s*\n+\\s*").ReplaceAll([]byte(output), []byte("\n")))
 	return &output, nil
+}
+
+func (e *Extractor) isSpace(c byte) bool {
+	return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v'
 }
 
 // Recursively extract plain text from the HTML nodes.
 func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node, idx int) {
 	liType := e.listItemType(node)
 	if liType == OrderedListItem {
-		plainText.WriteString(fmt.Sprintf("%d.", idx))
+		plainText.WriteString(fmt.Sprintf("%d. ", idx))
 	} else if liType == UnorderedListItem {
-		plainText.WriteString("-")
+		plainText.WriteString("- ")
 	}
 
 	if node.Type == html.TextNode {
 		// Trim and append the text content
-		text := strings.TrimSpace(node.Data)
-		if text != "" {
-			if plainText.Len() > 0 {
-				plainText.WriteString(" ")
-			}
-			plainText.WriteString(text)
+		// text := strings.TrimSpace(node.Data)
+		if strings.TrimSpace(node.Data) != "" {
+			// if plainText.Len() > 0 {
+			// 	plainText.WriteString(" ")
+			// }
+			// if node.Parent == nil || node.Parent.DataAtom.String() == "div" {
+			// 	plainText.WriteString(text)
+			// } else {
+			// 	plainText.WriteString(node.Data)
+			// }
+			plainText.WriteString(node.Data)
 		}
 	}
 	if node.DataAtom.String() == "br" {
