@@ -1,9 +1,11 @@
 package html
 
 import (
-	"golang.org/x/net/html"
+	"fmt"
 	"regexp"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 // Extractor represents an HTML-specific plain text extractor.
@@ -32,7 +34,7 @@ func (e *Extractor) PlainText(input string) (*string, error) {
 	}
 
 	var plainText strings.Builder
-	e.extractText(&plainText, doc)
+	e.extractText(&plainText, doc, 0)
 
 	output := plainText.String()
 	output = string(regexp.MustCompile("\n+\\s+").ReplaceAll([]byte(output), []byte("\n")))
@@ -40,7 +42,14 @@ func (e *Extractor) PlainText(input string) (*string, error) {
 }
 
 // Recursively extract plain text from the HTML nodes.
-func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node) {
+func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node, idx int) {
+	liType := e.listItemType(node)
+	if liType == OrderedListItem {
+		plainText.WriteString(fmt.Sprintf("%d.", idx))
+	} else if liType == UnorderedListItem {
+		plainText.WriteString("-")
+	}
+
 	if node.Type == html.TextNode {
 		// Trim and append the text content
 		text := strings.TrimSpace(node.Data)
@@ -56,10 +65,40 @@ func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node) {
 		return
 	}
 
+	i := 0
+	var isList bool = node.DataAtom.String() == "ul" || node.DataAtom.String() == "ol"
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		e.extractText(plainText, child)
+		if isList {
+			i++
+		}
+		e.extractText(plainText, child, i)
 	}
 	if found := e.blockTags[node.DataAtom.String()]; found {
 		plainText.WriteString("\n")
 	}
+}
+
+type ListItemType int
+
+const (
+	Unknown           ListItemType = iota
+	UnorderedListItem ListItemType = 1
+	OrderedListItem   ListItemType = 2
+)
+
+func (e *Extractor) listItemType(node *html.Node) ListItemType {
+	if node.DataAtom.String() != "li" {
+		return Unknown
+	}
+
+	for p := node.Parent; p != nil; p = p.Parent {
+		if p.DataAtom.String() == "ul" {
+			return UnorderedListItem
+		}
+		if p.DataAtom.String() == "ol" {
+			return OrderedListItem
+		}
+	}
+
+	return Unknown
 }
