@@ -19,14 +19,14 @@ var tags = []Tag{
 	{
 		Name:       "Bold",
 		FullRegex:  regexp.MustCompile(`\*\*(.*?)\*\*|__(.*?)__`),
-		StartRegex: regexp.MustCompile(`\*\*`),
-		EndRegex:   regexp.MustCompile(`\*\*`),
+		StartRegex: regexp.MustCompile(`\*\*|__`),
+		EndRegex:   regexp.MustCompile(`\*\*|__`),
 	},
 	{
 		Name:       "Italic",
 		FullRegex:  regexp.MustCompile(`\*(.*?)\*|_(.*?)_`),
-		StartRegex: regexp.MustCompile(`\*`),
-		EndRegex:   regexp.MustCompile(`\*`),
+		StartRegex: regexp.MustCompile(`\*|_`),
+		EndRegex:   regexp.MustCompile(`\*|_`),
 	},
 	{
 		Name:       "Strikethrough",
