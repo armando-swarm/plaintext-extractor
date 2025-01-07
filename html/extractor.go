@@ -2,7 +2,6 @@ package html
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 
@@ -65,7 +64,6 @@ func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node, idx
 	}
 
 	if node.Type == html.TextNode {
-		log.Printf("%sX", node.Data)
 		isListItemText := e.isListItemTextFirstChild(node)
 		if !isListItemText {
 			plainText.WriteString(node.Data)
