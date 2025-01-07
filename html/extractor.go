@@ -64,8 +64,38 @@ func (e *Extractor) extractText(plainText *strings.Builder, node *html.Node, idx
 	}
 
 	if node.Type == html.TextNode {
-		if strings.TrimSpace(node.Data) != "" {
+		text := strings.TrimSpace(node.Data)
+		isListItemText := e.isListItemTextFirstChild(node)
+		if text != "" && !isListItemText {
 			plainText.WriteString(node.Data)
+		} else if text != "" && isListItemText {
+			/*
+				a tree of text under the list item tag, given the form
+
+				<li>This is a <b>bold</b> list item.</li>
+
+				looks like:
+
+				<li>
+				  - <text> This is a
+				    - <b> bold
+				  - <text> list item.
+
+				therefore we only strip the leading spaces of the first child of a list item
+			*/
+			var listItemText string
+			if e.isSpace(node.Data[0]) {
+				var i int
+				for i = 1; i < len(node.Data); i++ {
+					if !e.isSpace(node.Data[i]) {
+						break
+					}
+				}
+				listItemText = node.Data[i:]
+			} else {
+				listItemText = node.Data
+			}
+			plainText.WriteString(listItemText)
 		}
 	}
 	if node.DataAtom.String() == "br" {
@@ -109,4 +139,8 @@ func (e *Extractor) listItemType(node *html.Node) ListItemType {
 	}
 
 	return Unknown
+}
+
+func (e *Extractor) isListItemTextFirstChild(node *html.Node) bool {
+	return node.Type == html.TextNode && e.listItemType(node.Parent) != Unknown && node.Parent.FirstChild == node
 }
