@@ -40,7 +40,13 @@ const rawHTML = `<p>This is a <b>bold</b> text inside a paragraph.</p>
 <p>
   <b>Testing hyperlinks <a href="https://www.swarm.work"><i>inheritance</i> stuff</a> that inherit outer tags</b>
 </p>
+
+<p>
+    
+</p>
 `
+
+// NOTE: intentional 4 spaces between the last <p> above to make sure nothing is rendered if empty
 
 const plainTextHTML = `This is a bold text inside a paragraph.
 This is an italicized text inside another paragraph.
@@ -53,7 +59,7 @@ Nested  and maybe italic and bold and not.
 - This is an example of a list item
 with a linebreak
 - And what happens if another item follows the linebreak
-Testing hyperlinksclick me quickly! or else go boom inside a paragraph with complex formatting.
+Testing hyperlinks click me quickly! or else go boom inside a paragraph with complex formatting.
 Testing hyperlinks inheritance stuff that inherit outer tags
 `
 
